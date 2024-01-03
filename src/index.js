@@ -12,7 +12,7 @@ connectDB()
       console.log("Error", error);
       throw err;
     });
-    const port = process.env.PORT || 8000;
+    const port = process.env.PORT || 8000
     app.listen(port, () => {
       console.log(`⚙️ Server is running at port : ${port}`);
     });
