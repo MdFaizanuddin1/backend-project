@@ -5,6 +5,8 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from 'jsonwebtoken'
 import mongoose from "mongoose";
+import doten from 'dotenv'
+doten.config()
 
 const generateAccessAndRefreshTokens = async(userId) => {
   try {
@@ -160,8 +162,11 @@ const logoutUser = asyncHandler (async (req,res)=>{
   await User.findByIdAndUpdate (
     req.user._id ,
     {
-      $set :{
-        refreshToken:undefined
+      // $set :{
+      //   refreshToken:undefined
+      // }
+      $unset :{
+        refreshToken:1 //this removes the field from document
       }
     },
     {
@@ -318,7 +323,7 @@ const updateUserCoverImage = asyncHandler (async (req,res)=>{
     new ApiError (400, "Error while uploading on coverImage")
   }
 
-  await User.findByIdAndUpdate(
+  const user = await User.findByIdAndUpdate(
     req.user?._id ,
     {$set:{
       coverImage:coverImage.url
@@ -392,7 +397,7 @@ const getUserChannelProfile = asyncHandler (async (req,res)=>{
       }
     }
   ])
-  console.log("\n aggregate channel \n" ,channel);
+  //console.log("\n aggregate channel \n" ,channel);
   if(!channel?.length){
     throw new ApiError(404, "channel does not exists")
   }
